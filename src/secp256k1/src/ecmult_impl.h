@@ -45,7 +45,7 @@ static void secp256k1_ecmult_table_precomp_gej_var(secp256k1_gej_t *pre, const s
 
 static void secp256k1_ecmult_table_precomp_ge_var(secp256k1_ge_t *pre, const secp256k1_gej_t *a, int w) {
     const int table_size = 1 << (w-2);
-    secp256k1_gej_t *prej = checked_malloc(sizeof(secp256k1_gej_t) * table_size);
+	secp256k1_gej_t *prej = (secp256k1_gej_t*) checked_malloc(sizeof(secp256k1_gej_t) * table_size);
     prej[0] = *a;
     secp256k1_gej_t d; secp256k1_gej_double_var(&d, a);
     for (int i=1; i<table_size; i++) {

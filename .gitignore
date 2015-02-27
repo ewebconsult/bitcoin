@@ -113,3 +113,10 @@ qa/pull-tester/test.*/*
 /doc/doxygen/
 
 libbitcoinconsensus.pc
+
+*.suo
+Debug/
+Release/
+packages/
+*.sdf
+*.user
