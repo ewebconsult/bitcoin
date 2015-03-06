@@ -12,19 +12,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C10CD174-0D7B-4448-BB88-8AA8F67E4D3E}</ProjectGuid>
+    <ProjectGuid>{E2358943-ECDC-4CD5-834A-4B89C0576F5C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>bitcoind</RootNamespace>
+    <RootNamespace>bitcoincommon</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -41,14 +41,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheet.props" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros">
-    <NuGetPackageImportStamp>b41d77bf</NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <NuGetPackageImportStamp>6bad799d</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -56,15 +51,12 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;LEVELDB_PLATFORM_WINDOWS;HAVE_CONFIG_H;__func__=__FUNCTION__;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\src;..\..\src\config;..\..\src\secp256k1\include;..\..\src\leveldb\include;..\..\src\leveldb\helpers\memenv</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;__func__=__FUNCTION__;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\src;..\..\src\secp256k1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>bitcoin-common.lib;bitcoin-util.lib;bitcoin-server.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;secp256k1.lib;leveldb.lib;shlwapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -75,26 +67,71 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;LEVELDB_PLATFORM_WINDOWS;HAVE_CONFIG_H;__func__=__FUNCTION__;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\src;..\..\src\config;..\..\src\secp256k1\include;..\..\src\leveldb\include;..\..\src\leveldb\helpers\memenv</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;__func__=__FUNCTION__;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\src;..\..\src\secp256k1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>bitcoin-common.lib;bitcoin-util.lib;bitcoin-server.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;secp256k1.lib;leveldb.lib;shlwapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\bitcoind.cpp" />
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\allocators.cpp" />
+    <ClCompile Include="..\..\src\amount.cpp" />
+    <ClCompile Include="..\..\src\arith_uint256.cpp" />
+    <ClCompile Include="..\..\src\base58.cpp" />
+    <ClCompile Include="..\..\src\chainparams.cpp" />
+    <ClCompile Include="..\..\src\coins.cpp" />
+    <ClCompile Include="..\..\src\compressor.cpp" />
+    <ClCompile Include="..\..\src\core_read.cpp" />
+    <ClCompile Include="..\..\src\core_write.cpp" />
+    <ClCompile Include="..\..\src\eccryptoverify.cpp" />
+    <ClCompile Include="..\..\src\ecwrapper.cpp" />
+    <ClCompile Include="..\..\src\hash.cpp" />
+    <ClCompile Include="..\..\src\key.cpp" />
+    <ClCompile Include="..\..\src\keystore.cpp" />
+    <ClCompile Include="..\..\src\netbase.cpp" />
+    <ClCompile Include="..\..\src\primitives\block.cpp" />
+    <ClCompile Include="..\..\src\primitives\transaction.cpp" />
+    <ClCompile Include="..\..\src\protocol.cpp" />
+    <ClCompile Include="..\..\src\pubkey.cpp" />
+    <ClCompile Include="..\..\src\script\interpreter.cpp" />
+    <ClCompile Include="..\..\src\script\script.cpp" />
+    <ClCompile Include="..\..\src\script\script_error.cpp" />
+    <ClCompile Include="..\..\src\script\sign.cpp" />
+    <ClCompile Include="..\..\src\script\standard.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\allocators.h" />
+    <ClInclude Include="..\..\src\amount.h" />
+    <ClInclude Include="..\..\src\arith_uint256.h" />
+    <ClInclude Include="..\..\src\base58.h" />
+    <ClInclude Include="..\..\src\chainparams.h" />
+    <ClInclude Include="..\..\src\coins.h" />
+    <ClInclude Include="..\..\src\compressor.h" />
+    <ClInclude Include="..\..\src\eccryptoverify.h" />
+    <ClInclude Include="..\..\src\ecwrapper.h" />
+    <ClInclude Include="..\..\src\hash.h" />
+    <ClInclude Include="..\..\src\key.h" />
+    <ClInclude Include="..\..\src\keystore.h" />
+    <ClInclude Include="..\..\src\netbase.h" />
+    <ClInclude Include="..\..\src\primitives\block.h" />
+    <ClInclude Include="..\..\src\primitives\transaction.h" />
+    <ClInclude Include="..\..\src\protocol.h" />
+    <ClInclude Include="..\..\src\pubkey.h" />
+    <ClInclude Include="..\..\src\script\interpreter.h" />
+    <ClInclude Include="..\..\src\script\script.h" />
+    <ClInclude Include="..\..\src\script\script_error.h" />
+    <ClInclude Include="..\..\src\script\sign.h" />
+    <ClInclude Include="..\..\src\script\standard.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\..\src\bitcoin-cli-res.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

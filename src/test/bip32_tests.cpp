@@ -3,7 +3,9 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <boost/test/unit_test.hpp>
+#include <boost/foreach.hpp>
 
+#include "utilstrencodings.h"
 #include "base58.h"
 #include "key.h"
 #include "uint256.h"
