@@ -3355,19 +3355,17 @@ void static ProcessGetData(CNode* pfrom)
                 BlockMap::iterator mi = mapBlockIndex.find(inv.hash);
                 if (mi != mapBlockIndex.end())
                 {
-                    // If the requested block is at a height below our last
-                    // checkpoint, only serve it if it's in the checkpointed chain
-                    int nHeight = mi->second->nHeight;
-                    CBlockIndex* pcheckpoint = Checkpoints::GetLastCheckpoint();
-                    if (pcheckpoint && nHeight < pcheckpoint->nHeight) {
-                        if (!chainActive.Contains(mi->second))
-                        {
-                            LogPrintf("ProcessGetData(): ignoring request for old block that isn't in the main chain\n");
-                        } else {
-                            send = true;
-                        }
-                    } else {
+                    if (chainActive.Contains(mi->second)) {
                         send = true;
+                    } else {
+                        // To prevent fingerprinting attacks, only send blocks outside of the active
+                        // chain if they are valid, and no more than a month older than the best header
+                        // chain we know about.
+                        send = mi->second->IsValid(BLOCK_VALID_SCRIPTS) && (pindexBestHeader != NULL) &&
+                            (mi->second->GetBlockTime() > pindexBestHeader->GetBlockTime() - 30 * 24 * 60 * 60);
+                        if (!send) {
+                            LogPrintf("ProcessGetData(): ignoring request from peer=%i for old block that isn't in the main chain\n", pfrom->GetId());
+                        }
                     }
                 }
                 if (send)
@@ -4307,7 +4305,7 @@ bool ProcessMessages(CNode* pfrom)
 
         // Read header
         CMessageHeader& hdr = msg.hdr;
-        if (!hdr.IsValid())
+        if (!hdr.IsValid(Params().MessageStart()))
         {
             LogPrintf("PROCESSMESSAGE: ERRORS IN HEADER %s peer=%d\n", SanitizeString(hdr.GetCommand()), pfrom->id);
             continue;
@@ -4320,8 +4318,7 @@ bool ProcessMessages(CNode* pfrom)
         // Checksum
         CDataStream& vRecv = msg.vRecv;
         uint256 hash = Hash(vRecv.begin(), vRecv.begin() + nMessageSize);
-        unsigned int nChecksum = 0;
-        memcpy(&nChecksum, &hash, sizeof(nChecksum));
+        unsigned int nChecksum = ReadLE32((unsigned char*)&hash);
         if (nChecksum != hdr.nChecksum)
         {
             LogPrintf("ProcessMessages(%s, %u bytes): CHECKSUM ERROR nChecksum=%08x hdr.nChecksum=%08x\n",
