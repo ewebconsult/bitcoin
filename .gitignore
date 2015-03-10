@@ -120,3 +120,4 @@ Release/
 packages/
 *.sdf
 *.user
+/msvc/*.opensdf
