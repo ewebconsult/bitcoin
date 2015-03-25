@@ -77,7 +77,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\allocators.cpp" />
     <ClCompile Include="..\..\src\amount.cpp" />
     <ClCompile Include="..\..\src\arith_uint256.cpp" />
     <ClCompile Include="..\..\src\base58.cpp" />
@@ -101,6 +100,7 @@
     <ClCompile Include="..\..\src\script\script_error.cpp" />
     <ClCompile Include="..\..\src\script\sign.cpp" />
     <ClCompile Include="..\..\src\script\standard.cpp" />
+    <ClCompile Include="..\..\src\support\pagelocker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\allocators.h" />
