@@ -57,7 +57,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;__func__=__FUNCTION__;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\src\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src\test;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -65,6 +65,34 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>bitcoin-server.lib;bitcoin-common.lib;bitcoin-util.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;bitcoin-consensus.lib;leveldb.lib;secp256k1.lib;shlwapi.lib;Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>@setlocal enabledelayedexpansion
+@echo off
+
+set "_path=$(IntDir)data\"
+set "_data_path=$(SolutionDir)..\src\test\data\"
+
+echo !_path!
+echo !_data_path!
+
+if not exist "!_path!" mkdir "!_path!"
+
+for /f "tokens=*" %%f in ('dir /b "!_data_path!*.raw"') do if not exist "!_path!%%f.h" (
+  @echo Generating %%f.h
+  @echo namespace alert_tests { &gt;&gt; "!_path!%%f.h" &amp;  @echo     static unsigned const char %%~nf[] = { &gt;&gt; "!_path!%%f.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1" "!_data_path!%%f" &gt;&gt; "!_path!%%f.h"
+  @echo     }; &gt;&gt; "!_path!%%f.h" &amp; @echo }; &gt;&gt; "!_path!%%f.h"
+)
+
+for /f "tokens=*" %%j in ('dir /b "!_data_path!*.json"') do if not exist "!_path!%%j.h" (
+  @echo Generating %%j.h
+  @echo namespace json_tests { &gt;&gt; "!_path!%%j.h" &amp;  @echo     static unsigned const char %%~nj[] = {  &gt;&gt; "!_path!%%j.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1"  "!_data_path!%%j" &gt;&gt; "!_path!%%j.h"
+  @echo     }; &gt;&gt; "!_path!%%j.h" &amp; @echo }; &gt;&gt; "!_path!%%j.h"
+)
+
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -75,7 +103,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;__func__=__FUNCTION__;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\src\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src\test;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -85,6 +113,34 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>bitcoin-server.lib;bitcoin-common.lib;bitcoin-util.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;bitcoin-consensus.lib;leveldb.lib;secp256k1.lib;shlwapi.lib;Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>@setlocal enabledelayedexpansion
+@echo off
+
+set "_path=$(IntDir)data\"
+set "_data_path=$(SolutionDir)..\src\test\data\"
+
+echo !_path!
+echo !_data_path!
+
+if not exist "!_path!" mkdir "!_path!"
+
+for /f "tokens=*" %%f in ('dir /b "!_data_path!*.raw"') do if not exist "!_path!%%f.h" (
+  @echo Generating %%f.h
+  @echo namespace alert_tests { &gt;&gt; "!_path!%%f.h" &amp;  @echo     static unsigned const char %%~nf[] = { &gt;&gt; "!_path!%%f.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1" "!_data_path!%%f" &gt;&gt; "!_path!%%f.h"
+  @echo     }; &gt;&gt; "!_path!%%f.h" &amp; @echo }; &gt;&gt; "!_path!%%f.h"
+)
+
+for /f "tokens=*" %%j in ('dir /b "!_data_path!*.json"') do if not exist "!_path!%%j.h" (
+  @echo Generating %%j.h
+  @echo namespace json_tests { &gt;&gt; "!_path!%%j.h" &amp;  @echo     static unsigned const char %%~nj[] = {  &gt;&gt; "!_path!%%j.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1"  "!_data_path!%%j" &gt;&gt; "!_path!%%j.h"
+  @echo     }; &gt;&gt; "!_path!%%j.h" &amp; @echo }; &gt;&gt; "!_path!%%j.h"
+)
+
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\test\allocator_tests.cpp" />
