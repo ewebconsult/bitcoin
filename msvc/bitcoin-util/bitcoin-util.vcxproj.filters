@@ -60,6 +60,9 @@
     <ClCompile Include="..\..\src\utiltime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\support\pagelocker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\chainparamsbase.h">

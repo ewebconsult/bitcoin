@@ -101,6 +101,7 @@
     <ClCompile Include="..\..\src\timedata.cpp" />
     <ClCompile Include="..\..\src\txdb.cpp" />
     <ClCompile Include="..\..\src\txmempool.cpp" />
+    <ClCompile Include="..\..\src\validationinterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\addrman.h" />

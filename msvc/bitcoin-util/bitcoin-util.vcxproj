@@ -85,6 +85,7 @@
     <ClCompile Include="..\..\src\random.cpp" />
     <ClCompile Include="..\..\src\rpcprotocol.cpp" />
     <ClCompile Include="..\..\src\support\cleanse.cpp" />
+    <ClCompile Include="..\..\src\support\pagelocker.cpp" />
     <ClCompile Include="..\..\src\sync.cpp" />
     <ClCompile Include="..\..\src\uint256.cpp" />
     <ClCompile Include="..\..\src\util.cpp" />

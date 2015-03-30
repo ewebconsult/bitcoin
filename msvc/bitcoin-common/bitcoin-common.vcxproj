@@ -100,7 +100,6 @@
     <ClCompile Include="..\..\src\script\script_error.cpp" />
     <ClCompile Include="..\..\src\script\sign.cpp" />
     <ClCompile Include="..\..\src\script\standard.cpp" />
-    <ClCompile Include="..\..\src\support\pagelocker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\allocators.h" />
