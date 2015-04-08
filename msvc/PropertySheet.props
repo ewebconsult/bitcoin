@@ -6,7 +6,8 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\src;..\..\src\config;..\..\src\secp256k1\include;..\..\src\leveldb\include;..\..\src\leveldb\helpers\memenv</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;LEVELDB_PLATFORM_WINDOWS;__func__=__FUNCTION__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;LEVELDB_PLATFORM_WINDOWS;__func__=__FUNCTION__;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration)</AdditionalLibraryDirectories>
