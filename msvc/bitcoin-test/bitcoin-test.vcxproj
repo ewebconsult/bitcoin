@@ -6,9 +6,17 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -23,7 +31,20 @@
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
@@ -37,7 +58,15 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheet.props" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\PropertySheet.props" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\PropertySheet.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheet.props" />
   </ImportGroup>
@@ -47,7 +76,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -62,7 +97,49 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>bitcoin-server.lib;bitcoin-common.lib;bitcoin-util.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;bitcoin-consensus.lib;leveldb.lib;secp256k1.lib;shlwapi.lib;Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>@setlocal enabledelayedexpansion
+@echo off
+
+set "_path=$(IntDir)data\"
+set "_data_path=$(SolutionDir)..\src\test\data\"
+
+echo !_path!
+echo !_data_path!
+
+if not exist "!_path!" mkdir "!_path!"
+
+for /f "tokens=*" %%f in ('dir /b "!_data_path!*.raw"') do if not exist "!_path!%%f.h" (
+  @echo Generating %%f.h
+  @echo namespace alert_tests { &gt;&gt; "!_path!%%f.h" &amp;  @echo     static unsigned const char %%~nf[] = { &gt;&gt; "!_path!%%f.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1" "!_data_path!%%f" &gt;&gt; "!_path!%%f.h"
+  @echo     }; &gt;&gt; "!_path!%%f.h" &amp; @echo }; &gt;&gt; "!_path!%%f.h"
+)
+
+for /f "tokens=*" %%j in ('dir /b "!_data_path!*.json"') do if not exist "!_path!%%j.h" (
+  @echo Generating %%j.h
+  @echo namespace json_tests { &gt;&gt; "!_path!%%j.h" &amp;  @echo     static unsigned const char %%~nj[] = {  &gt;&gt; "!_path!%%j.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1"  "!_data_path!%%j" &gt;&gt; "!_path!%%j.h"
+  @echo     }; &gt;&gt; "!_path!%%j.h" &amp; @echo }; &gt;&gt; "!_path!%%j.h"
+)
+
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;__func__=__FUNCTION__;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\src\test;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>bitcoin-server.lib;bitcoin-common.lib;bitcoin-util.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;bitcoin-consensus.lib;leveldb.lib;secp256k1.lib;shlwapi.lib;Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
@@ -110,7 +187,53 @@ for /f "tokens=*" %%j in ('dir /b "!_data_path!*.json"') do if not exist "!_path
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>bitcoin-server.lib;bitcoin-common.lib;bitcoin-util.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;bitcoin-consensus.lib;leveldb.lib;secp256k1.lib;shlwapi.lib;Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>@setlocal enabledelayedexpansion
+@echo off
+
+set "_path=$(IntDir)data\"
+set "_data_path=$(SolutionDir)..\src\test\data\"
+
+echo !_path!
+echo !_data_path!
+
+if not exist "!_path!" mkdir "!_path!"
+
+for /f "tokens=*" %%f in ('dir /b "!_data_path!*.raw"') do if not exist "!_path!%%f.h" (
+  @echo Generating %%f.h
+  @echo namespace alert_tests { &gt;&gt; "!_path!%%f.h" &amp;  @echo     static unsigned const char %%~nf[] = { &gt;&gt; "!_path!%%f.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1" "!_data_path!%%f" &gt;&gt; "!_path!%%f.h"
+  @echo     }; &gt;&gt; "!_path!%%f.h" &amp; @echo }; &gt;&gt; "!_path!%%f.h"
+)
+
+for /f "tokens=*" %%j in ('dir /b "!_data_path!*.json"') do if not exist "!_path!%%j.h" (
+  @echo Generating %%j.h
+  @echo namespace json_tests { &gt;&gt; "!_path!%%j.h" &amp;  @echo     static unsigned const char %%~nj[] = {  &gt;&gt; "!_path!%%j.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1"  "!_data_path!%%j" &gt;&gt; "!_path!%%j.h"
+  @echo     }; &gt;&gt; "!_path!%%j.h" &amp; @echo }; &gt;&gt; "!_path!%%j.h"
+)
+
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;__func__=__FUNCTION__;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\src\test;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>bitcoin-server.lib;bitcoin-common.lib;bitcoin-util.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;bitcoin-consensus.lib;leveldb.lib;secp256k1.lib;shlwapi.lib;Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
