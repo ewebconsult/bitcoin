@@ -266,6 +266,8 @@ for /f "tokens=*" %%j in ('dir /b "!_data_path!*.json"') do if not exist "!_path
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\rpcclient.cpp" />
+    <ClCompile Include="..\..\src\test\alert_tests.cpp" />
     <ClCompile Include="..\..\src\test\allocator_tests.cpp" />
     <ClCompile Include="..\..\src\test\arith_uint256_tests.cpp" />
     <ClCompile Include="..\..\src\test\base32_tests.cpp" />
@@ -277,7 +279,21 @@ for /f "tokens=*" %%j in ('dir /b "!_data_path!*.json"') do if not exist "!_path
     <ClCompile Include="..\..\src\test\Checkpoints_tests.cpp" />
     <ClCompile Include="..\..\src\test\coins_tests.cpp" />
     <ClCompile Include="..\..\src\test\compress_tests.cpp" />
+    <ClCompile Include="..\..\src\test\crypto_tests.cpp" />
+    <ClCompile Include="..\..\src\test\DoS_tests.cpp" />
+    <ClCompile Include="..\..\src\test\getarg_tests.cpp" />
+    <ClCompile Include="..\..\src\test\hash_tests.cpp" />
+    <ClCompile Include="..\..\src\test\key_tests.cpp" />
     <ClCompile Include="..\..\src\test\main_tests.cpp" />
+    <ClCompile Include="..\..\src\test\mempool_tests.cpp" />
+    <ClCompile Include="..\..\src\test\miner_tests.cpp" />
+    <ClCompile Include="..\..\src\test\mruset_tests.cpp" />
+    <ClCompile Include="..\..\src\test\multisig_tests.cpp" />
+    <ClCompile Include="..\..\src\test\netbase_tests.cpp" />
+    <ClCompile Include="..\..\src\test\pmt_tests.cpp" />
+    <ClCompile Include="..\..\src\test\pow_tests.cpp" />
+    <ClCompile Include="..\..\src\test\rpc_tests.cpp" />
+    <ClCompile Include="..\..\src\test\sanity_tests.cpp" />
     <ClCompile Include="..\..\src\test\scriptnum_tests.cpp" />
     <ClCompile Include="..\..\src\test\script_P2SH_tests.cpp" />
     <ClCompile Include="..\..\src\test\script_tests.cpp" />
