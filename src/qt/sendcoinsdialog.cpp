@@ -274,11 +274,11 @@ void SendCoinsDialog::on_sendButton_clicked()
                 recipientElement = tr("%1 to %2").arg(amount, address);
             }
         }
-        else if(!rcp.authenticatedMerchant.isEmpty()) // secure payment request
+        else if(!rcp.authenticatedMerchant.isEmpty()) // authenticated payment request
         {
             recipientElement = tr("%1 to %2").arg(amount, GUIUtil::HtmlEscape(rcp.authenticatedMerchant));
         }
-        else // insecure payment request
+        else // unauthenticated payment request
         {
             recipientElement = tr("%1 to %2").arg(amount, address);
         }
@@ -505,7 +505,7 @@ void SendCoinsDialog::processSendCoinsReturn(const WalletModel::SendCoinsReturn 
     switch(sendCoinsReturn.status)
     {
     case WalletModel::InvalidAddress:
-        msgParams.first = tr("The recipient address is not valid, please recheck.");
+        msgParams.first = tr("The recipient address is not valid. Please recheck.");
         break;
     case WalletModel::InvalidAmount:
         msgParams.first = tr("The amount to pay must be larger than 0.");
@@ -517,7 +517,7 @@ void SendCoinsDialog::processSendCoinsReturn(const WalletModel::SendCoinsReturn 
         msgParams.first = tr("The total exceeds your balance when the %1 transaction fee is included.").arg(msgArg);
         break;
     case WalletModel::DuplicateAddress:
-        msgParams.first = tr("Duplicate address found, can only send to each address once per send operation.");
+        msgParams.first = tr("Duplicate address found: addresses should only be used once each.");
         break;
     case WalletModel::TransactionCreationFailed:
         msgParams.first = tr("Transaction creation failed!");
