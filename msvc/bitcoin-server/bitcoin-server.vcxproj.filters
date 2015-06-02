@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\script">
+      <UniqueIdentifier>{15276434-32c2-4967-a329-c92bd8948277}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\policy">
+      <UniqueIdentifier>{09d31364-2665-43b8-92d6-28c1a5892198}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -78,9 +84,6 @@
     <ClCompile Include="..\..\src\rpcserver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\script\sigcache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\timedata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,6 +95,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\validationinterface.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\script\sigcache.cpp">
+      <Filter>Source Files\script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\policy\fees.cpp">
+      <Filter>Source Files\policy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

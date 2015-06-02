@@ -152,6 +152,7 @@
     <ClCompile Include="..\..\src\primitives\transaction.cpp" />
     <ClCompile Include="..\..\src\protocol.cpp" />
     <ClCompile Include="..\..\src\pubkey.cpp" />
+    <ClCompile Include="..\..\src\scheduler.cpp" />
     <ClCompile Include="..\..\src\script\interpreter.cpp" />
     <ClCompile Include="..\..\src\script\script.cpp" />
     <ClCompile Include="..\..\src\script\script_error.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="..\..\src\primitives\transaction.h" />
     <ClInclude Include="..\..\src\protocol.h" />
     <ClInclude Include="..\..\src\pubkey.h" />
+    <ClInclude Include="..\..\src\scheduler.h" />
     <ClInclude Include="..\..\src\script\interpreter.h" />
     <ClInclude Include="..\..\src\script\script.h" />
     <ClInclude Include="..\..\src\script\script_error.h" />
