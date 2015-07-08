@@ -21,6 +21,8 @@ testScripts=(
     'mempool_resurrect_test.py'
     'txn_doublespend.py'
     'txn_doublespend.py --mineblock'
+    'txn_clone.py'
+    'txn_clone.py --mineblock'
     'getchaintips.py'
     'rawtransactions.py'
     'rest.py'
@@ -34,6 +36,8 @@ testScripts=(
     'signrawtransactions.py'
     'walletbackup.py'
     'nodehandling.py'
+    'reindex.py'
+    'decodescript.py'
 );
 testScriptsExt=(
     'bipdersig-p2p.py'
@@ -45,7 +49,6 @@ testScriptsExt=(
     'invalidateblock.py'
     'keypool.py'
     'receivedby.py'
-    'reindex.py'
     'rpcbind_test.py'
 #   'script_test.py'
     'smartfees.py'
