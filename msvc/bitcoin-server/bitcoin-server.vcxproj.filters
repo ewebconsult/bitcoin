@@ -102,6 +102,9 @@
     <ClCompile Include="..\..\src\policy\fees.cpp">
       <Filter>Source Files\policy</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\policy\policy.cpp">
+      <Filter>Source Files\policy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\addrman.h">

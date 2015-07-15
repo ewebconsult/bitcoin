@@ -147,6 +147,7 @@
     <ClCompile Include="..\..\src\net.cpp" />
     <ClCompile Include="..\..\src\noui.cpp" />
     <ClCompile Include="..\..\src\policy\fees.cpp" />
+    <ClCompile Include="..\..\src\policy\policy.cpp" />
     <ClCompile Include="..\..\src\pow.cpp" />
     <ClCompile Include="..\..\src\rest.cpp" />
     <ClCompile Include="..\..\src\rpcblockchain.cpp" />
