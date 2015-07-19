@@ -72,7 +72,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <NuGetPackageImportStamp>e7811e33</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>f8c24f44</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -178,6 +178,7 @@
     <Import Project="..\packages\zlib.1.2.8.7\build\native\zlib.targets" Condition="Exists('..\packages\zlib.1.2.8.7\build\native\zlib.targets')" />
     <Import Project="..\packages\openssl.redist.1.0.1.25\build\native\openssl.redist.targets" Condition="Exists('..\packages\openssl.redist.1.0.1.25\build\native\openssl.redist.targets')" />
     <Import Project="..\packages\openssl.1.0.1.25\build\native\openssl.targets" Condition="Exists('..\packages\openssl.1.0.1.25\build\native\openssl.targets')" />
+    <Import Project="..\packages\boost.1.58.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.58.0.0\build\native\boost.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -188,5 +189,6 @@
     <Error Condition="!Exists('..\packages\openssl.redist.1.0.1.25\build\native\openssl.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\openssl.redist.1.0.1.25\build\native\openssl.redist.targets'))" />
     <Error Condition="!Exists('..\packages\openssl.1.0.1.25\build\native\openssl.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\openssl.1.0.1.25\build\native\openssl.props'))" />
     <Error Condition="!Exists('..\packages\openssl.1.0.1.25\build\native\openssl.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\openssl.1.0.1.25\build\native\openssl.targets'))" />
+    <Error Condition="!Exists('..\packages\boost.1.58.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.58.0.0\build\native\boost.targets'))" />
   </Target>
 </Project>
