@@ -1,0 +1,387 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E2EE1557-FF30-454B-84AF-6B14AEA37F2C}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>bitcointest</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\PropertySheet.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\PropertySheet.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\PropertySheet.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\PropertySheet.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;__func__=__FUNCTION__;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\src\test;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>bitcoin-server.lib;bitcoin-common.lib;bitcoin-util.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;bitcoin-consensus.lib;leveldb.lib;secp256k1.lib;crypt32.lib;shlwapi.lib;Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>@setlocal enabledelayedexpansion
+@echo off
+
+set "_path=$(IntDir)data\"
+set "_data_path=$(SolutionDir)..\src\test\data\"
+
+echo !_path!
+echo !_data_path!
+
+if not exist "!_path!" mkdir "!_path!"
+
+for /f "tokens=*" %%f in ('dir /b "!_data_path!*.raw"') do if not exist "!_path!%%f.h" (
+  @echo Generating %%f.h
+  @echo namespace alert_tests { &gt;&gt; "!_path!%%f.h" &amp;  @echo     static unsigned const char %%~nf[] = { &gt;&gt; "!_path!%%f.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1" "!_data_path!%%f" &gt;&gt; "!_path!%%f.h"
+  @echo     }; &gt;&gt; "!_path!%%f.h" &amp; @echo }; &gt;&gt; "!_path!%%f.h"
+)
+
+for /f "tokens=*" %%j in ('dir /b "!_data_path!*.json"') do if not exist "!_path!%%j.h" (
+  @echo Generating %%j.h
+  @echo namespace json_tests { &gt;&gt; "!_path!%%j.h" &amp;  @echo     static unsigned const char %%~nj[] = {  &gt;&gt; "!_path!%%j.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1"  "!_data_path!%%j" &gt;&gt; "!_path!%%j.h"
+  @echo     }; &gt;&gt; "!_path!%%j.h" &amp; @echo }; &gt;&gt; "!_path!%%j.h"
+)
+
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;__func__=__FUNCTION__;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\src\test;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>bitcoin-server.lib;bitcoin-common.lib;bitcoin-util.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;bitcoin-consensus.lib;leveldb.lib;secp256k1.lib;crypt32.lib;shlwapi.lib;Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>@setlocal enabledelayedexpansion
+@echo off
+
+set "_path=$(IntDir)data\"
+set "_data_path=$(SolutionDir)..\src\test\data\"
+
+echo !_path!
+echo !_data_path!
+
+if not exist "!_path!" mkdir "!_path!"
+
+for /f "tokens=*" %%f in ('dir /b "!_data_path!*.raw"') do if not exist "!_path!%%f.h" (
+  @echo Generating %%f.h
+  @echo namespace alert_tests { &gt;&gt; "!_path!%%f.h" &amp;  @echo     static unsigned const char %%~nf[] = { &gt;&gt; "!_path!%%f.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1" "!_data_path!%%f" &gt;&gt; "!_path!%%f.h"
+  @echo     }; &gt;&gt; "!_path!%%f.h" &amp; @echo }; &gt;&gt; "!_path!%%f.h"
+)
+
+for /f "tokens=*" %%j in ('dir /b "!_data_path!*.json"') do if not exist "!_path!%%j.h" (
+  @echo Generating %%j.h
+  @echo namespace json_tests { &gt;&gt; "!_path!%%j.h" &amp;  @echo     static unsigned const char %%~nj[] = {  &gt;&gt; "!_path!%%j.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1"  "!_data_path!%%j" &gt;&gt; "!_path!%%j.h"
+  @echo     }; &gt;&gt; "!_path!%%j.h" &amp; @echo }; &gt;&gt; "!_path!%%j.h"
+)
+
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;__func__=__FUNCTION__;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\src\test;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>bitcoin-server.lib;bitcoin-common.lib;bitcoin-util.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;bitcoin-consensus.lib;leveldb.lib;secp256k1.lib;crypt32.lib;shlwapi.lib;Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>@setlocal enabledelayedexpansion
+@echo off
+
+set "_path=$(IntDir)data\"
+set "_data_path=$(SolutionDir)..\src\test\data\"
+
+echo !_path!
+echo !_data_path!
+
+if not exist "!_path!" mkdir "!_path!"
+
+for /f "tokens=*" %%f in ('dir /b "!_data_path!*.raw"') do if not exist "!_path!%%f.h" (
+  @echo Generating %%f.h
+  @echo namespace alert_tests { &gt;&gt; "!_path!%%f.h" &amp;  @echo     static unsigned const char %%~nf[] = { &gt;&gt; "!_path!%%f.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1" "!_data_path!%%f" &gt;&gt; "!_path!%%f.h"
+  @echo     }; &gt;&gt; "!_path!%%f.h" &amp; @echo }; &gt;&gt; "!_path!%%f.h"
+)
+
+for /f "tokens=*" %%j in ('dir /b "!_data_path!*.json"') do if not exist "!_path!%%j.h" (
+  @echo Generating %%j.h
+  @echo namespace json_tests { &gt;&gt; "!_path!%%j.h" &amp;  @echo     static unsigned const char %%~nj[] = {  &gt;&gt; "!_path!%%j.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1"  "!_data_path!%%j" &gt;&gt; "!_path!%%j.h"
+  @echo     }; &gt;&gt; "!_path!%%j.h" &amp; @echo }; &gt;&gt; "!_path!%%j.h"
+)
+
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;HAVE_CONFIG_H;__func__=__FUNCTION__;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\src\test;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>bitcoin-server.lib;bitcoin-common.lib;bitcoin-util.lib;bitcoin-crypto.lib;bitcoin-univalue.lib;bitcoin-consensus.lib;leveldb.lib;secp256k1.lib;crypt32.lib;shlwapi.lib;Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>@setlocal enabledelayedexpansion
+@echo off
+
+set "_path=$(IntDir)data\"
+set "_data_path=$(SolutionDir)..\src\test\data\"
+
+echo !_path!
+echo !_data_path!
+
+if not exist "!_path!" mkdir "!_path!"
+
+for /f "tokens=*" %%f in ('dir /b "!_data_path!*.raw"') do if not exist "!_path!%%f.h" (
+  @echo Generating %%f.h
+  @echo namespace alert_tests { &gt;&gt; "!_path!%%f.h" &amp;  @echo     static unsigned const char %%~nf[] = { &gt;&gt; "!_path!%%f.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1" "!_data_path!%%f" &gt;&gt; "!_path!%%f.h"
+  @echo     }; &gt;&gt; "!_path!%%f.h" &amp; @echo }; &gt;&gt; "!_path!%%f.h"
+)
+
+for /f "tokens=*" %%j in ('dir /b "!_data_path!*.json"') do if not exist "!_path!%%j.h" (
+  @echo Generating %%j.h
+  @echo namespace json_tests { &gt;&gt; "!_path!%%j.h" &amp;  @echo     static unsigned const char %%~nj[] = {  &gt;&gt; "!_path!%%j.h"
+  PowerShell -ExecutionPolicy Bypass -File "$(ProjectDir)\Get-HexDump.ps1"  "!_data_path!%%j" &gt;&gt; "!_path!%%j.h"
+  @echo     }; &gt;&gt; "!_path!%%j.h" &amp; @echo }; &gt;&gt; "!_path!%%j.h"
+)
+
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\rpcclient.cpp" />
+    <ClCompile Include="..\..\src\test\alert_tests.cpp" />
+    <ClCompile Include="..\..\src\test\allocator_tests.cpp" />
+    <ClCompile Include="..\..\src\test\arith_uint256_tests.cpp" />
+    <ClCompile Include="..\..\src\test\base32_tests.cpp" />
+    <ClCompile Include="..\..\src\test\base58_tests.cpp" />
+    <ClCompile Include="..\..\src\test\base64_tests.cpp" />
+    <ClCompile Include="..\..\src\test\bip32_tests.cpp" />
+    <ClCompile Include="..\..\src\test\bloom_tests.cpp" />
+    <ClCompile Include="..\..\src\test\checkblock_tests.cpp" />
+    <ClCompile Include="..\..\src\test\Checkpoints_tests.cpp" />
+    <ClCompile Include="..\..\src\test\coins_tests.cpp" />
+    <ClCompile Include="..\..\src\test\compress_tests.cpp" />
+    <ClCompile Include="..\..\src\test\crypto_tests.cpp" />
+    <ClCompile Include="..\..\src\test\DoS_tests.cpp" />
+    <ClCompile Include="..\..\src\test\getarg_tests.cpp" />
+    <ClCompile Include="..\..\src\test\hash_tests.cpp" />
+    <ClCompile Include="..\..\src\test\key_tests.cpp" />
+    <ClCompile Include="..\..\src\test\main_tests.cpp" />
+    <ClCompile Include="..\..\src\test\mempool_tests.cpp" />
+    <ClCompile Include="..\..\src\test\miner_tests.cpp" />
+    <ClCompile Include="..\..\src\test\mruset_tests.cpp" />
+    <ClCompile Include="..\..\src\test\multisig_tests.cpp" />
+    <ClCompile Include="..\..\src\test\netbase_tests.cpp" />
+    <ClCompile Include="..\..\src\test\pmt_tests.cpp" />
+    <ClCompile Include="..\..\src\test\pow_tests.cpp" />
+    <ClCompile Include="..\..\src\test\rpc_tests.cpp" />
+    <ClCompile Include="..\..\src\test\sanity_tests.cpp" />
+    <ClCompile Include="..\..\src\test\scriptnum_tests.cpp" />
+    <ClCompile Include="..\..\src\test\script_P2SH_tests.cpp" />
+    <ClCompile Include="..\..\src\test\script_tests.cpp" />
+    <ClCompile Include="..\..\src\test\serialize_tests.cpp" />
+    <ClCompile Include="..\..\src\test\sighash_tests.cpp" />
+    <ClCompile Include="..\..\src\test\sigopcount_tests.cpp" />
+    <ClCompile Include="..\..\src\test\skiplist_tests.cpp" />
+    <ClCompile Include="..\..\src\test\test_bitcoin.cpp" />
+    <ClCompile Include="..\..\src\test\timedata_tests.cpp" />
+    <ClCompile Include="..\..\src\test\transaction_tests.cpp" />
+    <ClCompile Include="..\..\src\test\uint256_tests.cpp" />
+    <ClCompile Include="..\..\src\test\univalue_tests.cpp" />
+    <ClCompile Include="..\..\src\test\util_tests.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\boost.1.59.0-b1\build\native\boost.targets" Condition="Exists('..\packages\boost.1.59.0-b1\build\native\boost.targets')" />
+    <Import Project="..\packages\boost_atomic-vc140.1.59.0-b1\build\native\boost_atomic-vc140.targets" Condition="Exists('..\packages\boost_atomic-vc140.1.59.0-b1\build\native\boost_atomic-vc140.targets')" />
+    <Import Project="..\packages\boost_chrono-vc140.1.59.0-b1\build\native\boost_chrono-vc140.targets" Condition="Exists('..\packages\boost_chrono-vc140.1.59.0-b1\build\native\boost_chrono-vc140.targets')" />
+    <Import Project="..\packages\boost_container-vc140.1.59.0-b1\build\native\boost_container-vc140.targets" Condition="Exists('..\packages\boost_container-vc140.1.59.0-b1\build\native\boost_container-vc140.targets')" />
+    <Import Project="..\packages\boost_context-vc140.1.59.0-b1\build\native\boost_context-vc140.targets" Condition="Exists('..\packages\boost_context-vc140.1.59.0-b1\build\native\boost_context-vc140.targets')" />
+    <Import Project="..\packages\boost_coroutine-vc140.1.59.0-b1\build\native\boost_coroutine-vc140.targets" Condition="Exists('..\packages\boost_coroutine-vc140.1.59.0-b1\build\native\boost_coroutine-vc140.targets')" />
+    <Import Project="..\packages\boost_date_time-vc140.1.59.0-b1\build\native\boost_date_time-vc140.targets" Condition="Exists('..\packages\boost_date_time-vc140.1.59.0-b1\build\native\boost_date_time-vc140.targets')" />
+    <Import Project="..\packages\boost_exception-vc140.1.59.0-b1\build\native\boost_exception-vc140.targets" Condition="Exists('..\packages\boost_exception-vc140.1.59.0-b1\build\native\boost_exception-vc140.targets')" />
+    <Import Project="..\packages\boost_filesystem-vc140.1.59.0-b1\build\native\boost_filesystem-vc140.targets" Condition="Exists('..\packages\boost_filesystem-vc140.1.59.0-b1\build\native\boost_filesystem-vc140.targets')" />
+    <Import Project="..\packages\boost_graph-vc140.1.59.0-b1\build\native\boost_graph-vc140.targets" Condition="Exists('..\packages\boost_graph-vc140.1.59.0-b1\build\native\boost_graph-vc140.targets')" />
+    <Import Project="..\packages\boost_iostreams-vc140.1.59.0-b1\build\native\boost_iostreams-vc140.targets" Condition="Exists('..\packages\boost_iostreams-vc140.1.59.0-b1\build\native\boost_iostreams-vc140.targets')" />
+    <Import Project="..\packages\boost_locale-vc140.1.59.0-b1\build\native\boost_locale-vc140.targets" Condition="Exists('..\packages\boost_locale-vc140.1.59.0-b1\build\native\boost_locale-vc140.targets')" />
+    <Import Project="..\packages\boost_log-vc140.1.59.0-b1\build\native\boost_log-vc140.targets" Condition="Exists('..\packages\boost_log-vc140.1.59.0-b1\build\native\boost_log-vc140.targets')" />
+    <Import Project="..\packages\boost_log_setup-vc140.1.59.0-b1\build\native\boost_log_setup-vc140.targets" Condition="Exists('..\packages\boost_log_setup-vc140.1.59.0-b1\build\native\boost_log_setup-vc140.targets')" />
+    <Import Project="..\packages\boost_math_c99-vc140.1.59.0-b1\build\native\boost_math_c99-vc140.targets" Condition="Exists('..\packages\boost_math_c99-vc140.1.59.0-b1\build\native\boost_math_c99-vc140.targets')" />
+    <Import Project="..\packages\boost_math_c99f-vc140.1.59.0-b1\build\native\boost_math_c99f-vc140.targets" Condition="Exists('..\packages\boost_math_c99f-vc140.1.59.0-b1\build\native\boost_math_c99f-vc140.targets')" />
+    <Import Project="..\packages\boost_math_tr1-vc140.1.59.0-b1\build\native\boost_math_tr1-vc140.targets" Condition="Exists('..\packages\boost_math_tr1-vc140.1.59.0-b1\build\native\boost_math_tr1-vc140.targets')" />
+    <Import Project="..\packages\boost_math_tr1f-vc140.1.59.0-b1\build\native\boost_math_tr1f-vc140.targets" Condition="Exists('..\packages\boost_math_tr1f-vc140.1.59.0-b1\build\native\boost_math_tr1f-vc140.targets')" />
+    <Import Project="..\packages\boost_prg_exec_monitor-vc140.1.59.0-b1\build\native\boost_prg_exec_monitor-vc140.targets" Condition="Exists('..\packages\boost_prg_exec_monitor-vc140.1.59.0-b1\build\native\boost_prg_exec_monitor-vc140.targets')" />
+    <Import Project="..\packages\boost_program_options-vc140.1.59.0-b1\build\native\boost_program_options-vc140.targets" Condition="Exists('..\packages\boost_program_options-vc140.1.59.0-b1\build\native\boost_program_options-vc140.targets')" />
+    <Import Project="..\packages\boost_random-vc140.1.59.0-b1\build\native\boost_random-vc140.targets" Condition="Exists('..\packages\boost_random-vc140.1.59.0-b1\build\native\boost_random-vc140.targets')" />
+    <Import Project="..\packages\boost_regex-vc140.1.59.0-b1\build\native\boost_regex-vc140.targets" Condition="Exists('..\packages\boost_regex-vc140.1.59.0-b1\build\native\boost_regex-vc140.targets')" />
+    <Import Project="..\packages\boost_serialization-vc140.1.59.0-b1\build\native\boost_serialization-vc140.targets" Condition="Exists('..\packages\boost_serialization-vc140.1.59.0-b1\build\native\boost_serialization-vc140.targets')" />
+    <Import Project="..\packages\boost_signals-vc140.1.59.0-b1\build\native\boost_signals-vc140.targets" Condition="Exists('..\packages\boost_signals-vc140.1.59.0-b1\build\native\boost_signals-vc140.targets')" />
+    <Import Project="..\packages\boost_system-vc140.1.59.0-b1\build\native\boost_system-vc140.targets" Condition="Exists('..\packages\boost_system-vc140.1.59.0-b1\build\native\boost_system-vc140.targets')" />
+    <Import Project="..\packages\boost_test_exec_monitor-vc140.1.59.0-b1\build\native\boost_test_exec_monitor-vc140.targets" Condition="Exists('..\packages\boost_test_exec_monitor-vc140.1.59.0-b1\build\native\boost_test_exec_monitor-vc140.targets')" />
+    <Import Project="..\packages\boost_thread-vc140.1.59.0-b1\build\native\boost_thread-vc140.targets" Condition="Exists('..\packages\boost_thread-vc140.1.59.0-b1\build\native\boost_thread-vc140.targets')" />
+    <Import Project="..\packages\boost_timer-vc140.1.59.0-b1\build\native\boost_timer-vc140.targets" Condition="Exists('..\packages\boost_timer-vc140.1.59.0-b1\build\native\boost_timer-vc140.targets')" />
+    <Import Project="..\packages\boost_unit_test_framework-vc140.1.59.0-b1\build\native\boost_unit_test_framework-vc140.targets" Condition="Exists('..\packages\boost_unit_test_framework-vc140.1.59.0-b1\build\native\boost_unit_test_framework-vc140.targets')" />
+    <Import Project="..\packages\boost_wave-vc140.1.59.0-b1\build\native\boost_wave-vc140.targets" Condition="Exists('..\packages\boost_wave-vc140.1.59.0-b1\build\native\boost_wave-vc140.targets')" />
+    <Import Project="..\packages\boost_wserialization-vc140.1.59.0-b1\build\native\boost_wserialization-vc140.targets" Condition="Exists('..\packages\boost_wserialization-vc140.1.59.0-b1\build\native\boost_wserialization-vc140.targets')" />
+    <Import Project="..\packages\boost-vc140.1.59.0-b1\build\native\boost-vc140.targets" Condition="Exists('..\packages\boost-vc140.1.59.0-b1\build\native\boost-vc140.targets')" />
+    <Import Project="..\packages\zlib.v140.windesktop.msvcstl.static.rt-dyn.1.2.8.8\build\native\zlib.v140.windesktop.msvcstl.static.rt-dyn.targets" Condition="Exists('..\packages\zlib.v140.windesktop.msvcstl.static.rt-dyn.1.2.8.8\build\native\zlib.v140.windesktop.msvcstl.static.rt-dyn.targets')" />
+    <Import Project="..\packages\openssl.v140.windesktop.msvcstl.static.rt-dyn.x64.1.0.2.1\build\native\openssl.v140.windesktop.msvcstl.static.rt-dyn.x64.targets" Condition="Exists('..\packages\openssl.v140.windesktop.msvcstl.static.rt-dyn.x64.1.0.2.1\build\native\openssl.v140.windesktop.msvcstl.static.rt-dyn.x64.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\boost.1.59.0-b1\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.59.0-b1\build\native\boost.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_atomic-vc140.1.59.0-b1\build\native\boost_atomic-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_atomic-vc140.1.59.0-b1\build\native\boost_atomic-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_chrono-vc140.1.59.0-b1\build\native\boost_chrono-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_chrono-vc140.1.59.0-b1\build\native\boost_chrono-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_container-vc140.1.59.0-b1\build\native\boost_container-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_container-vc140.1.59.0-b1\build\native\boost_container-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_context-vc140.1.59.0-b1\build\native\boost_context-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_context-vc140.1.59.0-b1\build\native\boost_context-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_coroutine-vc140.1.59.0-b1\build\native\boost_coroutine-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_coroutine-vc140.1.59.0-b1\build\native\boost_coroutine-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_date_time-vc140.1.59.0-b1\build\native\boost_date_time-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_date_time-vc140.1.59.0-b1\build\native\boost_date_time-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_exception-vc140.1.59.0-b1\build\native\boost_exception-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_exception-vc140.1.59.0-b1\build\native\boost_exception-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_filesystem-vc140.1.59.0-b1\build\native\boost_filesystem-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_filesystem-vc140.1.59.0-b1\build\native\boost_filesystem-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_graph-vc140.1.59.0-b1\build\native\boost_graph-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_graph-vc140.1.59.0-b1\build\native\boost_graph-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_iostreams-vc140.1.59.0-b1\build\native\boost_iostreams-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_iostreams-vc140.1.59.0-b1\build\native\boost_iostreams-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_locale-vc140.1.59.0-b1\build\native\boost_locale-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_locale-vc140.1.59.0-b1\build\native\boost_locale-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_log-vc140.1.59.0-b1\build\native\boost_log-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_log-vc140.1.59.0-b1\build\native\boost_log-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_log_setup-vc140.1.59.0-b1\build\native\boost_log_setup-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_log_setup-vc140.1.59.0-b1\build\native\boost_log_setup-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_math_c99-vc140.1.59.0-b1\build\native\boost_math_c99-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_math_c99-vc140.1.59.0-b1\build\native\boost_math_c99-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_math_c99f-vc140.1.59.0-b1\build\native\boost_math_c99f-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_math_c99f-vc140.1.59.0-b1\build\native\boost_math_c99f-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_math_tr1-vc140.1.59.0-b1\build\native\boost_math_tr1-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_math_tr1-vc140.1.59.0-b1\build\native\boost_math_tr1-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_math_tr1f-vc140.1.59.0-b1\build\native\boost_math_tr1f-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_math_tr1f-vc140.1.59.0-b1\build\native\boost_math_tr1f-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_prg_exec_monitor-vc140.1.59.0-b1\build\native\boost_prg_exec_monitor-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_prg_exec_monitor-vc140.1.59.0-b1\build\native\boost_prg_exec_monitor-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_program_options-vc140.1.59.0-b1\build\native\boost_program_options-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_program_options-vc140.1.59.0-b1\build\native\boost_program_options-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_random-vc140.1.59.0-b1\build\native\boost_random-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_random-vc140.1.59.0-b1\build\native\boost_random-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_regex-vc140.1.59.0-b1\build\native\boost_regex-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_regex-vc140.1.59.0-b1\build\native\boost_regex-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_serialization-vc140.1.59.0-b1\build\native\boost_serialization-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_serialization-vc140.1.59.0-b1\build\native\boost_serialization-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_signals-vc140.1.59.0-b1\build\native\boost_signals-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_signals-vc140.1.59.0-b1\build\native\boost_signals-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_system-vc140.1.59.0-b1\build\native\boost_system-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_system-vc140.1.59.0-b1\build\native\boost_system-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_test_exec_monitor-vc140.1.59.0-b1\build\native\boost_test_exec_monitor-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_test_exec_monitor-vc140.1.59.0-b1\build\native\boost_test_exec_monitor-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_thread-vc140.1.59.0-b1\build\native\boost_thread-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_thread-vc140.1.59.0-b1\build\native\boost_thread-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_timer-vc140.1.59.0-b1\build\native\boost_timer-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_timer-vc140.1.59.0-b1\build\native\boost_timer-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_unit_test_framework-vc140.1.59.0-b1\build\native\boost_unit_test_framework-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_unit_test_framework-vc140.1.59.0-b1\build\native\boost_unit_test_framework-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_wave-vc140.1.59.0-b1\build\native\boost_wave-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_wave-vc140.1.59.0-b1\build\native\boost_wave-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_wserialization-vc140.1.59.0-b1\build\native\boost_wserialization-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_wserialization-vc140.1.59.0-b1\build\native\boost_wserialization-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\boost-vc140.1.59.0-b1\build\native\boost-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost-vc140.1.59.0-b1\build\native\boost-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\zlib.v140.windesktop.msvcstl.static.rt-dyn.1.2.8.8\build\native\zlib.v140.windesktop.msvcstl.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\zlib.v140.windesktop.msvcstl.static.rt-dyn.1.2.8.8\build\native\zlib.v140.windesktop.msvcstl.static.rt-dyn.targets'))" />
+    <Error Condition="!Exists('..\packages\openssl.v140.windesktop.msvcstl.static.rt-dyn.x64.1.0.2.1\build\native\openssl.v140.windesktop.msvcstl.static.rt-dyn.x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\openssl.v140.windesktop.msvcstl.static.rt-dyn.x64.1.0.2.1\build\native\openssl.v140.windesktop.msvcstl.static.rt-dyn.x64.targets'))" />
+  </Target>
+</Project>
