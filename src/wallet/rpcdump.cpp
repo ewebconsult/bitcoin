@@ -79,7 +79,7 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
     
     if (fHelp || params.size() < 1 || params.size() > 4)
         throw runtime_error(
-            "importprivkey \"bitcoinprivkey\" ( \"label\" rescan )\n"
+            "importprivkey \"bitcoinprivkey\" ( \"label\" rescan blocktime)\n"
             "\nAdds a private key (as returned by dumpprivkey) to your wallet.\n"
             "\nArguments:\n"
             "1. \"bitcoinprivkey\"   (string, required) The private key (see dumpprivkey)\n"
