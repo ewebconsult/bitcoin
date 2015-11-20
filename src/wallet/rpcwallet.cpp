@@ -22,7 +22,7 @@
 
 #include <boost/assign/list_of.hpp>
 
-#include "univalue/univalue.h"
+#include <univalue.h>
 
 using namespace std;
 
@@ -797,7 +797,7 @@ UniValue movecmd(const UniValue& params, bool fHelp)
             "4. minconf           (numeric, optional, default=1) Only use funds with at least this many confirmations.\n"
             "5. \"comment\"       (string, optional) An optional comment, stored in the wallet only.\n"
             "\nResult:\n"
-            "true|false           (boolean) true if successfull.\n"
+            "true|false           (boolean) true if successful.\n"
             "\nExamples:\n"
             "\nMove 0.01 " + CURRENCY_UNIT + " from the default account to the account named tabby\n"
             + HelpExampleCli("move", "\"\" \"tabby\" 0.01") +
@@ -1182,6 +1182,8 @@ UniValue ListReceived(const UniValue& params, bool fByAccounts)
             obj.push_back(Pair("account",       strAccount));
             obj.push_back(Pair("amount",        ValueFromAmount(nAmount)));
             obj.push_back(Pair("confirmations", (nConf == std::numeric_limits<int>::max() ? 0 : nConf)));
+            if (!fByAccounts)
+                obj.push_back(Pair("label", strAccount));
             UniValue transactions(UniValue::VARR);
             if (it != mapTally.end())
             {
@@ -1235,7 +1237,8 @@ UniValue listreceivedbyaddress(const UniValue& params, bool fHelp)
             "    \"address\" : \"receivingaddress\",  (string) The receiving address\n"
             "    \"account\" : \"accountname\",       (string) DEPRECATED. The account of the receiving address. The default account is \"\".\n"
             "    \"amount\" : x.xxx,                  (numeric) The total amount in " + CURRENCY_UNIT + " received by the address\n"
-            "    \"confirmations\" : n                (numeric) The number of confirmations of the most recent transaction included\n"
+            "    \"confirmations\" : n,               (numeric) The number of confirmations of the most recent transaction included\n"
+            "    \"label\" : \"label\"                (string) A comment for the address/transaction, if any\n"
             "  }\n"
             "  ,...\n"
             "]\n"
@@ -1271,7 +1274,8 @@ UniValue listreceivedbyaccount(const UniValue& params, bool fHelp)
             "    \"involvesWatchonly\" : true,   (bool) Only returned if imported addresses were involved in transaction\n"
             "    \"account\" : \"accountname\",  (string) The account name of the receiving account\n"
             "    \"amount\" : x.xxx,             (numeric) The total amount received by addresses with this account\n"
-            "    \"confirmations\" : n           (numeric) The number of confirmations of the most recent transaction included\n"
+            "    \"confirmations\" : n,          (numeric) The number of confirmations of the most recent transaction included\n"
+            "    \"label\" : \"label\"           (string) A comment for the address/transaction, if any\n"
             "  }\n"
             "  ,...\n"
             "]\n"
@@ -1318,6 +1322,8 @@ void ListTransactions(const CWalletTx& wtx, const string& strAccount, int nMinDe
             MaybePushAddress(entry, s.destination);
             entry.push_back(Pair("category", "send"));
             entry.push_back(Pair("amount", ValueFromAmount(-s.amount)));
+            if (pwalletMain->mapAddressBook.count(s.destination))
+                entry.push_back(Pair("label", pwalletMain->mapAddressBook[s.destination].name));
             entry.push_back(Pair("vout", s.vout));
             entry.push_back(Pair("fee", ValueFromAmount(-nFee)));
             if (fLong)
@@ -1355,6 +1361,8 @@ void ListTransactions(const CWalletTx& wtx, const string& strAccount, int nMinDe
                     entry.push_back(Pair("category", "receive"));
                 }
                 entry.push_back(Pair("amount", ValueFromAmount(r.amount)));
+                if (pwalletMain->mapAddressBook.count(r.destination))
+                    entry.push_back(Pair("label", account));
                 entry.push_back(Pair("vout", r.vout));
                 if (fLong)
                     WalletTxToJSON(wtx, entry);
@@ -1423,6 +1431,7 @@ UniValue listtransactions(const UniValue& params, bool fHelp)
             "    \"timereceived\": xxx,      (numeric) The time received in seconds since epoch (midnight Jan 1 1970 GMT). Available \n"
             "                                          for 'send' and 'receive' category of transactions.\n"
             "    \"comment\": \"...\",       (string) If a comment is associated with the transaction.\n"
+            "    \"label\" : \"label\"       (string) A comment for the address/transaction, if any\n"
             "    \"otheraccount\": \"accountname\",  (string) For the 'move' category of transactions, the account the funds came \n"
             "                                          from (for receiving funds, positive amounts), or went to (for sending funds,\n"
             "                                          negative amounts).\n"
@@ -1613,6 +1622,7 @@ UniValue listsinceblock(const UniValue& params, bool fHelp)
             "    \"time\": xxx,              (numeric) The transaction time in seconds since epoch (Jan 1 1970 GMT).\n"
             "    \"timereceived\": xxx,      (numeric) The time received in seconds since epoch (Jan 1 1970 GMT). Available for 'send' and 'receive' category of transactions.\n"
             "    \"comment\": \"...\",       (string) If a comment is associated with the transaction.\n"
+            "    \"label\" : \"label\"       (string) A comment for the address/transaction, if any\n"
             "    \"to\": \"...\",            (string) If a comment to is associated with the transaction.\n"
              "  ],\n"
             "  \"lastblock\": \"lastblockhash\"     (string) The hash of the last block\n"
@@ -1700,7 +1710,8 @@ UniValue gettransaction(const UniValue& params, bool fHelp)
             "      \"account\" : \"accountname\",  (string) DEPRECATED. The account name involved in the transaction, can be \"\" for the default account.\n"
             "      \"address\" : \"bitcoinaddress\",   (string) The bitcoin address involved in the transaction\n"
             "      \"category\" : \"send|receive\",    (string) The category, either 'send' or 'receive'\n"
-            "      \"amount\" : x.xxx                  (numeric) The amount in " + CURRENCY_UNIT + "\n"
+            "      \"amount\" : x.xxx,                 (numeric) The amount in " + CURRENCY_UNIT + "\n"
+            "      \"label\" : \"label\",              (string) A comment for the address/transaction, if any\n"
             "      \"vout\" : n,                       (numeric) the vout value\n"
             "    }\n"
             "    ,...\n"
@@ -2368,19 +2379,24 @@ UniValue fundrawtransaction(const UniValue& params, bool fHelp)
     if (!EnsureWalletIsAvailable(fHelp))
         return NullUniValue;
 
-    if (fHelp || params.size() != 1)
+    if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
-                            "fundrawtransaction \"hexstring\"\n"
+                            "fundrawtransaction \"hexstring\" includeWatching\n"
                             "\nAdd inputs to a transaction until it has enough in value to meet its out value.\n"
                             "This will not modify existing inputs, and will add one change output to the outputs.\n"
                             "Note that inputs which were signed may need to be resigned after completion since in/outputs have been added.\n"
                             "The inputs added will not be signed, use signrawtransaction for that.\n"
+                            "Note that all existing inputs must have their previous output transaction be in the wallet.\n"
+                            "Note that all inputs selected must be of standard form and P2SH scripts must be"
+                            "in the wallet using importaddress or addmultisigaddress (to calculate fees).\n"
+                            "Only pay-to-pubkey, multisig, and P2SH versions thereof are currently supported for watch-only\n"
                             "\nArguments:\n"
-                            "1. \"hexstring\"    (string, required) The hex string of the raw transaction\n"
+                            "1. \"hexstring\"     (string, required) The hex string of the raw transaction\n"
+                            "2. includeWatching (boolean, optional, default false) Also select inputs which are watch only\n"
                             "\nResult:\n"
                             "{\n"
                             "  \"hex\":       \"value\", (string)  The resulting raw transaction (hex-encoded string)\n"
-                            "  \"fee\":       n,         (numeric) The fee added to the transaction\n"
+                            "  \"fee\":       n,         (numeric) Fee the resulting transaction pays\n"
                             "  \"changepos\": n          (numeric) The position of the added change output, or -1\n"
                             "}\n"
                             "\"hex\"             \n"
@@ -2395,18 +2411,25 @@ UniValue fundrawtransaction(const UniValue& params, bool fHelp)
                             + HelpExampleCli("sendrawtransaction", "\"signedtransactionhex\"")
                             );
 
-    RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR));
+    RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR)(UniValue::VBOOL));
 
     // parse hex string from parameter
     CTransaction origTx;
     if (!DecodeHexTx(origTx, params[0].get_str()))
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
 
+    if (origTx.vout.size() == 0)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "TX must have at least one output");
+
+    bool includeWatching = false;
+    if (params.size() > 1)
+        includeWatching = params[1].get_bool();
+
     CMutableTransaction tx(origTx);
     CAmount nFee;
     string strFailReason;
     int nChangePos = -1;
-    if(!pwalletMain->FundTransaction(tx, nFee, nChangePos, strFailReason))
+    if(!pwalletMain->FundTransaction(tx, nFee, nChangePos, strFailReason, includeWatching))
         throw JSONRPCError(RPC_INTERNAL_ERROR, strFailReason);
 
     UniValue result(UniValue::VOBJ);

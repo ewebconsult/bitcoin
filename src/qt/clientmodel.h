@@ -9,6 +9,7 @@
 #include <QDateTime>
 
 class AddressTableModel;
+class BanTableModel;
 class OptionsModel;
 class PeerTableModel;
 class TransactionTableModel;
@@ -44,11 +45,17 @@ public:
 
     OptionsModel *getOptionsModel();
     PeerTableModel *getPeerTableModel();
+    BanTableModel *getBanTableModel();
 
     //! Return number of connections, default is in- and outbound (total)
     int getNumConnections(unsigned int flags = CONNECTIONS_ALL) const;
     int getNumBlocks() const;
 
+    //! Return number of transactions in the mempool
+    long getMempoolSize() const;
+    //! Return the dynamic memory usage of the mempool
+    size_t getMempoolDynamicUsage() const;
+    
     quint64 getTotalBytesRecv() const;
     quint64 getTotalBytesSent() const;
 
@@ -72,6 +79,7 @@ public:
 private:
     OptionsModel *optionsModel;
     PeerTableModel *peerTableModel;
+    BanTableModel *banTableModel;
 
     int cachedNumBlocks;
     QDateTime cachedBlockDate;
@@ -86,6 +94,7 @@ private:
 Q_SIGNALS:
     void numConnectionsChanged(int count);
     void numBlocksChanged(int count, const QDateTime& blockDate);
+    void mempoolSizeChanged(long count, size_t mempoolSizeInBytes);
     void alertsChanged(const QString &warnings);
     void bytesChanged(quint64 totalBytesIn, quint64 totalBytesOut);
 
@@ -99,6 +108,7 @@ public Q_SLOTS:
     void updateTimer();
     void updateNumConnections(int numConnections);
     void updateAlert(const QString &hash, int status);
+    void updateBanlist();
 };
 
 #endif // BITCOIN_QT_CLIENTMODEL_H

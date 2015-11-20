@@ -17,8 +17,43 @@ import subprocess
 import time
 import re
 
-from authproxy import AuthServiceProxy, JSONRPCException
-from util import *
+from . import coverage
+from .authproxy import AuthServiceProxy, JSONRPCException
+
+COVERAGE_DIR = None
+
+
+def enable_coverage(dirname):
+    """Maintain a log of which RPC calls are made during testing."""
+    global COVERAGE_DIR
+    COVERAGE_DIR = dirname
+
+
+def get_rpc_proxy(url, node_number, timeout=None):
+    """
+    Args:
+        url (str): URL of the RPC server to call
+        node_number (int): the node number (or id) that this calls to
+
+    Kwargs:
+        timeout (int): HTTP timeout in seconds
+
+    Returns:
+        AuthServiceProxy. convenience object for making RPC calls.
+
+    """
+    proxy_kwargs = {}
+    if timeout is not None:
+        proxy_kwargs['timeout'] = timeout
+
+    proxy = AuthServiceProxy(url, **proxy_kwargs)
+    proxy.url = url  # store URL on proxy for info
+
+    coverage_logfile = coverage.get_filename(
+        COVERAGE_DIR, node_number) if COVERAGE_DIR else None
+
+    return coverage.AuthServiceProxyWrapper(proxy, coverage_logfile)
+
 
 def p2p_port(n):
     return 11000 + n + os.getpid()%999
@@ -78,8 +113,17 @@ def initialize_chain(test_dir):
     bitcoind and bitcoin-cli must be in search path.
     """
 
-    if not os.path.isdir(os.path.join("cache", "node0")):
-        devnull = open("/dev/null", "w+")
+    if (not os.path.isdir(os.path.join("cache","node0"))
+        or not os.path.isdir(os.path.join("cache","node1"))
+        or not os.path.isdir(os.path.join("cache","node2"))
+        or not os.path.isdir(os.path.join("cache","node3"))):
+
+        #find and delete old cache directories if any exist
+        for i in range(4):
+            if os.path.isdir(os.path.join("cache","node"+str(i))):
+                shutil.rmtree(os.path.join("cache","node"+str(i)))
+
+        devnull = open(os.devnull, "w")
         # Create cache directories, run bitcoinds:
         for i in range(4):
             datadir=initialize_datadir("cache", i)
@@ -94,11 +138,13 @@ def initialize_chain(test_dir):
             if os.getenv("PYTHON_DEBUG", ""):
                 print "initialize_chain: bitcoin-cli -rpcwait getblockcount completed"
         devnull.close()
+
         rpcs = []
+
         for i in range(4):
             try:
-                url = "http://rt:rt@127.0.0.1:%d"%(rpc_port(i),)
-                rpcs.append(AuthServiceProxy(url))
+                url = "http://rt:rt@127.0.0.1:%d" % (rpc_port(i),)
+                rpcs.append(get_rpc_proxy(url, i))
             except:
                 sys.stderr.write("Error connecting to "+url+"\n")
                 sys.exit(1)
@@ -171,7 +217,7 @@ def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=
     args = [ binary, "-datadir="+datadir, "-keypool=1", "-discover=0", "-rest" ]
     if extra_args is not None: args.extend(extra_args)
     bitcoind_processes[i] = subprocess.Popen(args)
-    devnull = open("/dev/null", "w+")
+    devnull = open(os.devnull, "w")
     if os.getenv("PYTHON_DEBUG", ""):
         print "start_node: bitcoind started, calling bitcoin-cli -rpcwait getblockcount"
     subprocess.check_call([ os.getenv("BITCOINCLI", "bitcoin-cli"), "-datadir="+datadir] +
@@ -181,11 +227,12 @@ def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=
         print "start_node: calling bitcoin-cli -rpcwait getblockcount returned"
     devnull.close()
     url = "http://rt:rt@%s:%d" % (rpchost or '127.0.0.1', rpc_port(i))
-    if timewait is not None:
-        proxy = AuthServiceProxy(url, timeout=timewait)
-    else:
-        proxy = AuthServiceProxy(url)
-    proxy.url = url # store URL on proxy for info
+
+    proxy = get_rpc_proxy(url, i, timeout=timewait)
+
+    if COVERAGE_DIR:
+        coverage.write_all_rpc_commands(COVERAGE_DIR, proxy)
+
     return proxy
 
 def start_nodes(num_nodes, dirname, extra_args=None, rpchost=None, binary=None):

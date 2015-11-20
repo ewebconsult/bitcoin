@@ -60,6 +60,10 @@ static const bool DEFAULT_UPNP = false;
 static const size_t MAPASKFOR_MAX_SZ = MAX_INV_SZ;
 /** The maximum number of peer connections to maintain. */
 static const unsigned int DEFAULT_MAX_PEER_CONNECTIONS = 125;
+/** The default for -maxuploadtarget. 0 = Unlimited */
+static const uint64_t DEFAULT_MAX_UPLOAD_TARGET = 0;
+/** Default for blocks only*/
+static const bool DEFAULT_BLOCKSONLY = false;
 
 unsigned int ReceiveFloodSize();
 unsigned int SendBufferSize();
@@ -128,6 +132,7 @@ bool IsLimited(enum Network net);
 bool IsLimited(const CNetAddr& addr);
 bool AddLocal(const CService& addr, int nScore = LOCAL_NONE);
 bool AddLocal(const CNetAddr& addr, int nScore = LOCAL_NONE);
+bool RemoveLocal(const CService& addr);
 bool SeenLocal(const CService& addr);
 bool IsLocal(const CService& addr);
 bool GetLocal(CService &addr, const CNetAddr *paddrPeer = NULL);
@@ -143,19 +148,8 @@ extern uint64_t nLocalServices;
 extern uint64_t nLocalHostNonce;
 extern CAddrMan addrman;
 
-// The allocation of connections against the maximum allowed (nMaxConnections)
-// is prioritized as follows:
-// 1st: Outbound connections (MAX_OUTBOUND_CONNECTIONS)
-// 2nd: Inbound connections from whitelisted peers (nWhiteConnections)
-// 3rd: Inbound connections from non-whitelisted peers
-// Thus, the number of connection slots for the general public to use is:
-// nMaxConnections - (MAX_OUTBOUND_CONNECTIONS + nWhiteConnections)
-// Any additional inbound connections beyond limits will be immediately closed
-
 /** Maximum number of connections to simultaneously allow (aka connection slots) */
 extern int nMaxConnections;
-/** Number of connection slots to reserve for inbound from whitelisted peers */
-extern int nWhiteConnections;
 
 extern std::vector<CNode*> vNodes;
 extern CCriticalSection cs_vNodes;
@@ -200,6 +194,7 @@ public:
     bool fWhitelisted;
     double dPingTime;
     double dPingWait;
+    double dPingMin;
     std::string addrLocal;
 };
 
@@ -349,7 +344,7 @@ public:
     // We use fRelayTxes for two purposes -
     // a) it allows us to not relay tx invs before receiving the peer's version message
     // b) the peer may tell us in its version message that we should not relay tx invs
-    //    until it has initialized its bloom filter.
+    //    unless it loads a bloom filter.
     bool fRelayTxes;
     CSemaphoreGrant grantOutbound;
     CCriticalSection cs_filter;
@@ -395,6 +390,8 @@ public:
     int64_t nPingUsecStart;
     // Last measured round-trip time.
     int64_t nPingUsecTime;
+    // Best measured round-trip time.
+    int64_t nMinPingUsecTime;
     // Whether a ping is requested.
     bool fPingQueued;
 
@@ -407,6 +404,12 @@ private:
     static CCriticalSection cs_totalBytesSent;
     static uint64_t nTotalBytesRecv;
     static uint64_t nTotalBytesSent;
+
+    // outbound limit & stats
+    static uint64_t nMaxOutboundTotalBytesSentInCycle;
+    static uint64_t nMaxOutboundCycleStartTime;
+    static uint64_t nMaxOutboundLimit;
+    static uint64_t nMaxOutboundTimeframe;
 
     CNode(const CNode&);
     void operator=(const CNode&);
@@ -695,7 +698,7 @@ public:
     static bool BannedSetIsDirty();
     //!set the "dirty" flag for the banlist
     static void SetBannedSetDirty(bool dirty=true);
-    //!clean unused entires (if bantime has expired)
+    //!clean unused entries (if bantime has expired)
     static void SweepBanned();
 
     void copyStats(CNodeStats &stats);
@@ -709,6 +712,27 @@ public:
 
     static uint64_t GetTotalBytesRecv();
     static uint64_t GetTotalBytesSent();
+
+    //!set the max outbound target in bytes
+    static void SetMaxOutboundTarget(uint64_t limit);
+    static uint64_t GetMaxOutboundTarget();
+
+    //!set the timeframe for the max outbound target
+    static void SetMaxOutboundTimeframe(uint64_t timeframe);
+    static uint64_t GetMaxOutboundTimeframe();
+
+    //!check if the outbound target is reached
+    // if param historicalBlockServingLimit is set true, the function will
+    // response true if the limit for serving historical blocks has been reached
+    static bool OutboundTargetReached(bool historicalBlockServingLimit);
+
+    //!response the bytes left in the current max outbound cycle
+    // in case of no limit, it will always response 0
+    static uint64_t GetOutboundTargetBytesLeft();
+
+    //!response the time in second left in the current max outbound cycle
+    // in case of no limit, it will always response 0
+    static uint64_t GetMaxOutboundTimeLeftInCycle();
 };
 
 

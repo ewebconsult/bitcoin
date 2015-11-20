@@ -290,8 +290,10 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
             return TransactionCreationFailed;
         }
 
-        // reject absurdly high fee > 0.1 bitcoin
-        if (nFeeRequired > 10000000)
+        // reject absurdly high fee. (This can never happen because the
+        // wallet caps the fee at maxTxFee. This merely serves as a
+        // belt-and-suspenders check)
+        if (nFeeRequired > maxTxFee)
             return AbsurdFee;
     }
 
@@ -554,6 +556,11 @@ void WalletModel::UnlockContext::CopyFrom(const UnlockContext& rhs)
 bool WalletModel::getPubKey(const CKeyID &address, CPubKey& vchPubKeyOut) const
 {
     return wallet->GetPubKey(address, vchPubKeyOut);
+}
+
+bool WalletModel::havePrivKey(const CKeyID &address) const
+{
+    return wallet->HaveKey(address);
 }
 
 // returns a list of COutputs from COutPoints
